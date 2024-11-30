@@ -1,0 +1,41 @@
+# FROM python:3.10
+
+# ENV PYTHONUNBUFFERED 1
+# ENV PYTHONDONTWRITEBYTECODE 1
+
+# RUN set -e; \
+#     apt-get update ;\
+#     apt-get -y install netcat ;\
+#     apt-get -y install gettext ;\
+#     apt-get -y  install httpie; \
+#     pip install --upgrade pip \
+#     pip install flask
+
+# RUN mkdir /code
+# WORKDIR /code
+# COPY ./server.py .
+
+# ENTRYPOINT ["python","./server.py"]
+
+FROM python:3.10
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Install required dependencies
+RUN set -e; \
+    apt-get update; \
+    apt-get -y install netcat-openbsd gettext httpie; \
+    apt-get clean;
+
+RUN mkdir /code
+WORKDIR /code
+COPY ./server.py .
+
+# Install Flask
+RUN set -e; \
+    pip install --upgrade pip; \
+    pip install flask;
+
+EXPOSE 5000
+ENTRYPOINT ["python", "./server.py"]
